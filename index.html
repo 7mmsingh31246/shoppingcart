@@ -1,0 +1,192 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>My Cart</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script src="js/underscore.js"></script>
+</head>
+
+<body>
+<div id="shoppingcartmodel" class="shoppingcartmodel"></div>
+<div class="page">
+  <div class="wrap cf">
+    <div id="shoppingcart" class="shoppingcart"></div>
+  </div>
+  <script type="text/html" id='carttemplate'>
+<header class="header">
+      <h1 class="title">Your Shopping Bag</h1>
+    </header>
+    <section class="content">
+      <div class="cart">
+        <div class="cart-wrap">
+          <ul class="cart-row cart-header">
+            <li class="cart-col col-img"><%= items.length %> Items</li>
+            <li class="cart-col col-info"></li>
+            <li class="cart-col col-size">Size</li>
+            <li class="cart-col col-quantity">Qty</li>
+            <li class="cart-col col-price">Price</li>
+          </ul>
+          <%
+   _.each(items,function(item,key,list){            
+   %>
+          <ul class="cart-row items odd">
+            <li class="cart-col item col-img"><img src="images/<%= item.p_image %>" alt="" class="itemImg" /></li>
+            <li class="cart-col item col-info">
+              <h3 class="title"><%= item.p_name %></h3>
+              <p class="options option-style">Style #: <%= item.p_style %></p>
+              <p class="options option-color">Color: <%= item.p_selected_color.name %></p>
+              <ul class="links">
+                <li><a href="#" class="link link-edit" data-product-id="<%= item.p_id %>">Edit</a></li>
+                <li><a href="#" class="link link-remove" data-product-id="<%= item.p_id %>">X Remove</a></li>
+                <li><a href="#" class="link link-saveforlater">Save For Later</a></li>
+              </ul>
+            </li>
+            <li class="cart-col item col-size"><span class="size"><%= item.p_selected_size.code %></span></li>
+            <li class="cart-col item col-quantity"><span class="quantity">
+              <input type="text"  class="qty" placeholder="1" value="<%= item.p_quantity %>" data-product-id="<%= item.p_id %>" />
+              </span> </li>
+            <li class="cart-col item col-price">
+              <div class="price-box">
+                <p class="original-price" style="display:<%= item.p_price===item.p_originalprice?'none':'block' %>"><span class="currency"><%= item.c_currency %></span><span class="price"><%= item.p_originalprice %></span></p>
+                <p class="current-price"><span class="currency"><%= item.c_currency %></span><span class="price"><%= item.p_price %></span></p>
+              </div>
+            </li>
+          </ul>
+          <% }); %>
+          <ul>
+          </ul>
+        </div>
+      </div>
+      <div class="summary-container clearfix">
+        <div class="helptext">
+          <p><strong>Need help<br>
+            or have questions?</strong></p>
+          <p><a href="#">Call Customer Service At<br>
+            1-800-555-5555</a></p>
+          <p><a href="#">Chat with one of our spacialists</a></p>
+          <p><a href="#">See return <br>
+            & exchange policy</a></p>
+        </div>
+        <div class="promocode">
+          <form id="promoform" name="promoform" class="promoform" method="post">
+            <div class="promocode-col">
+              <label for="promo">Enter Promotion Code<br>
+                Or Gift Card <span class="tip">Use "JF10" or "JF11"</span></label>
+				
+            </div>
+            <div class="promocode-col form-group">
+				 <div class="promocode-field">
+					<input type="text" name="promo" placholder="Enter Code" class="input" />			  	
+					<button type="submit" class="btn btn-secondary">Apply</button>
+				</div>
+            </div>
+          </form>
+        </div>
+        <div class="subtotal clearfix">
+          <ul>
+            <li class="total-row">
+              <div class="label">Subtotal</div>
+              <div class="value">
+                <p class="price-box"><span class="currency"><%= currency %></span><span class="price"><%= subtotal %></span></p>
+              </div>
+            </li>
+            <li class="total-row">
+              <div class="label">Promotion code <%= promo.code %> Applied</div>
+              <div class="value">
+                <p class="price-box"><span class="currency"><%= currency %></span><span class="price"><%= promo.value %></span> </p>
+              </div>
+            </li>
+            <li class="total-row">
+              <div class="label">Estimatated Shipping
+                <p style="display:<%= shipping.price === 0?'block':'none' %>">You qualify for free shipping<br>
+                  because your oreder is over <%= currency %><%= freeshippingover %>*</p>
+              </div>
+              <div class="value">
+                <div class="price-box">
+					<p class="free" style="display:<%= shipping.price === 0?'block':'none' %>">Free</p>
+					<p style="display:<%= shipping.price > 0?'block':'none' %>"><span class="currency"><%= currency %></span><span class="price"><%= shipping.price %></span></p>
+				</div>
+              </div>
+            </li>
+            <li class="total-row final">
+              <div class="label">Total</div>
+              <div class="value">
+                <p class="price-box"><span class="currency"><%= currency %></span><span class="price"><%= total %></span></p>
+              </div>
+            </li>
+            <li class="total-row buttons"> <a href="#" class="btn btn-default btn-continue">Continue Shopping</a> <a href="#" class="btn btn-primary btn-checkout">Checkout</a></li>
+            <li class="total-row secure">
+              <p class="secure-text">Secure checkout. Shopping is always safe &amp; secure</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+</script> 
+  <script type="text/html" id='cartModelTemplate'>
+ <div class="model">
+ 	<div class="model-overlay"></div>
+    <div class="model-content">
+      <button class="btn btn-default model-close">X</button>
+      <div class="model-inner">
+        <div class="product-detail clearfix">
+          <div class="product-img"><img src="images/<%= product.p_image %>" alt="" class="itemImg" /></div>
+          <div class="product-info">
+            <h3 class="title"><%= product.p_name %></h3>
+            <div class="price-box">
+              <p class="original-price <%= product.p_price===product.p_originalprice?'hide':'' %>"><span class="currency"><%= product.c_currency %></span><span class="price"><%= product.p_originalprice %></span></p>
+              <p class="current-price"><span class="currency"><%= product.c_currency %></span><span class="price"><%= product.p_price %></span></p>
+            </div>
+            <div class="options options-color"> <span class="option-heading">Color</span>
+              <ul class="option-list">
+			   <%
+   _.each(product.p_available_options.colors,function(color,key,list){            
+   %>
+                <li class="option-color">
+					
+                    <input type="radio" id="option-<%= color.name %>" value="<%= color.name %>" name="color" class="product-color" <% if(product.p_selected_color.name===color.name){ %>checked="checked"<% } %> data-product-id="<%= product.p_id %>" />
+                    <label for="option-<%= color.name %>" style="background-color:<%= color.hexcode %>"><%= color.name %></label></li>
+				 <% }); %>
+              </ul>
+            </div>
+			<div>
+            <div class="options-dropdown"> <span class="option-heading">Size: <%= product.p_selected_size.code %></span>
+              <ul class="option-dropdown">
+			    <%
+   _.each(product.p_available_options.sizes,function(size,key,list){            
+   %>
+                <li>
+                  
+                    <input type="radio" name="size" id="option-<%= size.code %>" value="<%= size.code %>" class="size product-size" <% if(product.p_selected_size.code===size.code){ %>checked="checked"<% } %> data-product-id="<%= product.p_id %>" />
+                    <label for="option-<%= size.code %>"><%= size.name %></label>
+                </li>
+				 <% }); %>
+              </ul>
+            </div> 
+			 <div class="options-dropdown option-qty"> <span class="option-heading">Qty: <%= product.p_quantity %></span> 
+            </div> 
+			 </div> 
+			<p><button class="btn btn-primary btn-product-update">Edit</button></p>
+		  	<p><a href="#product-link" class="product-link">See product details.</a> </p> 
+          </div> 
+        </div>
+      </div>
+    </div>
+  </div>
+  </script> 
+  <script type="text/javascript" src="js/shoppingcart.js"></script> 
+  <script type="text/javascript">
+var sc = new ShopingCart({
+	jsonurl:"cart.json",
+	element:"#shoppingcart",
+	template:"#carttemplate",
+	model:{
+		container:"#shoppingcartmodel",
+		template:"#cartModelTemplate"
+	}
+});
+</script> 
+</div>
+</body>
+</html>
